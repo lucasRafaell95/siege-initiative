@@ -1,0 +1,11 @@
+.deployment/
+.vs
+Dockerfile
+Dockerfile.*
+docker-compose.yml
+.git
+.gitignore
+README.md
+
+#NEED IGNORE HOSTSETTINGS BECAUSE AT KUB8 THIS FILE REPLACE THE VALUE ON CONTAINER
+hostsettings.json
