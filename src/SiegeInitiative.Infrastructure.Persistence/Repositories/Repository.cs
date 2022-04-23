@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace SiegeInitiative.Infrastructure.Persistence.Repositories;
 
-internal abstract class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
+public class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
     where TEntity : AggregateRoot<TKey>
 {
     #region Fields

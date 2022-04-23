@@ -3,7 +3,7 @@ using SiegeInitiative.Domain.Persistence.Repositories.Base;
 
 namespace SiegeInitiative.Infrastructure.Persistence.Core;
 
-internal sealed class SiegeDbContext : DbContext, IUnitOfWork
+public sealed class SiegeDbContext : DbContext, IUnitOfWork
 {
     public SiegeDbContext(DbContextOptions<SiegeDbContext> options) : base(options) { }
 
