@@ -32,41 +32,41 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
 
     #region IRepository methods
 
-    public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var added = await Dbset.AddAsync(entity, cancellationToken);
 
         return added.Entity;
     }
 
-    public void Delete(TEntity entity)
+    public virtual void Delete(TEntity entity)
         => Dbset.Remove(entity);
 
-    public TEntity Update(TEntity entity)
+    public virtual TEntity Update(TEntity entity)
     {
         var updated = Dbset.Update(entity);
 
         return updated.Entity;
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync()
+    public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         => await Dbset.AsNoTracking().ToListAsync();
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes)
+    public virtual async Task<IEnumerable<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes)
     {
         var query = BuildQuery(includes);
 
         return await query.AsNoTracking().ToListAsync();
     }
 
-    public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes)
+    public virtual async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes)
     {
         var query = BuildQuery(includes);
 
         return await query.Where(expression).FirstOrDefaultAsync();
     }
 
-    public async Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes)
+    public virtual async Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes)
     {
         var query = BuildQuery(includes);
 

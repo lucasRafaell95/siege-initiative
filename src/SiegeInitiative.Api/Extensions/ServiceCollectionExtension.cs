@@ -37,7 +37,8 @@ public static class ServiceCollectionExtension
     private static IServiceCollection AddHealthCheck(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHealthChecks()
-            .AddSqlServer(configuration.GetConnectionString("SiegeInitiative"));
+            .AddSqlServer(configuration.GetConnectionString("SiegeInitiative"))
+            .AddRedis(configuration.GetValue<string>("DistributedCache:ConnectionString"));
 
         return services;
     }
