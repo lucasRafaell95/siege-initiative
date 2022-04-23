@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SiegeInitiative.Application\SiegeInitiative.Application.csproj" />
     <ProjectReference Include="..\SiegeInitiative.Infrastructure.Persistence\SiegeInitiative.Infrastructure.Persistence.csproj" />
   </ItemGroup>
 
