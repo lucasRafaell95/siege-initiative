@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Converters;
+using System.Reflection;
 
 namespace SiegeInitiative.Api.Extensions;
 
@@ -14,17 +15,30 @@ public static class ApplicationBuilderExtension
         {
             ResponseWriter = (httpContext, result) =>
             {
-                httpContext.Response.ContentType = "application/json";
+                httpContext.Response.ContentType = "application/json; charset=utf-8";
 
-                var json = new JObject(
-                    new JProperty("status", result.Status.ToString()),
-                    new JProperty("results", new JObject(result.Entries.Select(pair =>
-                        new JProperty(pair.Key, new JObject(
-                            new JProperty("status", pair.Value.Status.ToString()),
-                            new JProperty("description", pair.Value.Description),
-                            new JProperty("data", new JObject(pair.Value.Data.Select(
-                                p => new JProperty(p.Key, p.Value))))))))));
-                return httpContext.Response.WriteAsync(json.ToString(Formatting.Indented));
+                var json = new
+                {
+                    Status = result.Status,
+                    Duration = result.TotalDuration,
+                    Resource = new
+                    {
+                        AssemblyName = AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Name,
+                        AssemblyVersion = AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly()?.Location)?.Version?.ToString(),
+                        Resource = Environment.MachineName.Remove(0, Environment.MachineName.Length - 5),
+                    },
+                    services = result.Entries.Select(_ =>
+                        new
+                        {
+                            Status = _.Value.Status.ToString(),
+                            Duration = _.Value.Duration,
+                            Description = _.Value.Description,
+                            Data = _.Value.Data,
+                            Exception = _.Value.Exception?.Message
+                        })
+                };
+
+                return httpContext.Response.WriteAsync(JsonConvert.SerializeObject(json, new StringEnumConverter()));
             }
         });
 
