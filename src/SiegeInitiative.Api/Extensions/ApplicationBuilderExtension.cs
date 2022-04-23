@@ -27,9 +27,10 @@ public static class ApplicationBuilderExtension
                         AssemblyVersion = AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly()?.Location)?.Version?.ToString(),
                         Resource = Environment.MachineName.Remove(0, Environment.MachineName.Length - 5),
                     },
-                    services = result.Entries.Select(_ =>
+                    Services = result.Entries.Select(_ =>
                         new
                         {
+                            Service = _.Key,
                             Status = _.Value.Status.ToString(),
                             Duration = _.Value.Duration,
                             Description = _.Value.Description,
