@@ -5,14 +5,12 @@ using System.Runtime.CompilerServices;
 
 namespace SiegeInitiative.Api.Controllers.Base;
 
-/// <summary>
-/// Base class to Api Controller
-/// </summary>
+[ApiController]
 public abstract class ApiController : ControllerBase
 {
-    private readonly ILogger<ApiController> logger;
+    private readonly ILogger logger;
 
-    protected ApiController(ILogger<ApiController> logger)
+    protected ApiController(ILogger logger)
     {
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -20,20 +18,20 @@ public abstract class ApiController : ControllerBase
     protected virtual async Task<IActionResult> ExecuteRequestAsync<TResult>(Func<Task<Result<TResult>>> request,
                                                                              [CallerMemberName] string methodName = default)
     {
-        Result<TResult>? result;
+        Result<TResult>? result = default;
 
         try
         {
             result = await request.Invoke();
 
-            return result.Sucess
-                ? Ok(result)
-                : BadRequest(result);
+            if (!result.HasError)
+                return Ok(result);
+
+            if (HasBusinessError(result))
+                return BadRequest(result);
         }
         catch (Exception ex)
         {
-            result = new UnexpectedResult<TResult>();
-
             this.logger.LogError(methodName, new
             {
                 Exception = ex,
@@ -44,4 +42,7 @@ public abstract class ApiController : ControllerBase
 
         return StatusCode(StatusCodes.Status500InternalServerError, result);
     }
+
+    private static bool HasBusinessError<TResult>(Result<TResult> result)
+        => result.Messages.Any(_ => _.MessageType.Equals(MessageType.BusinessError));
 }
