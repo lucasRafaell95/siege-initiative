@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SiegeInitiative.Core.Caching;
-using SiegeInitiative.Core.Caching.Base;
 using SiegeInitiative.Core.Options;
 using SiegeInitiative.Core.Options.Base;
 
@@ -20,15 +18,6 @@ public static class ServiceCollectionExtension
     {
         services
             .AddSingleton<IRedisCacheOptions>(_ => configuration.GetSection("DistributedCache").Get<RedisCacheOptions>());
-
-        services.AddCacheServices();
-
-        return services;
-    }
-
-    private static IServiceCollection AddCacheServices(this IServiceCollection services)
-    {
-        services.AddScoped(typeof(IRedisCacheService<,>), typeof(RedisCacheService<,>));
 
         return services;
     }

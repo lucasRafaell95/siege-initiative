@@ -1,15 +1,12 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SiegeInitiative.Core.Caching.Base;
 using SiegeInitiative.Core.Options.Base;
-using SiegeInitiative.Domain.Entities.Base;
 using System.Text;
 
 namespace SiegeInitiative.Core.Caching;
 
-public class RedisCacheService<TEntity, TKey> : IRedisCacheService<TEntity, TKey>
-    where TEntity : Entity<TKey>
+public abstract class RedisCacheService
 {
     #region Fields
 
@@ -36,9 +33,16 @@ public class RedisCacheService<TEntity, TKey> : IRedisCacheService<TEntity, TKey
 
     #endregion
 
-    #region IRedisCacheService methods
+    #region Protected methods
 
-    public virtual async Task SetAsync(TEntity entity, string cacheKey, CancellationToken cancellation = default)
+    /// <summary>
+    /// Persist an object in redis
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="cacheKey"></param>
+    /// <param name="cancellation"></param>
+    /// <returns></returns>
+    protected virtual async Task SetAsync<TEntity>(TEntity entity, string cacheKey, CancellationToken cancellation = default)
     {
         try
         {
@@ -76,7 +80,14 @@ public class RedisCacheService<TEntity, TKey> : IRedisCacheService<TEntity, TKey
         }
     }
 
-    public virtual async Task<TEntity> GetAsync(string cacheKey, CancellationToken cancellation = default)
+    /// <summary>
+    /// Returns a redis record according to the given key
+    /// </summary>
+    /// <param name="cacheKey"></param>
+    /// <param name="fallback"></param>
+    /// <param name="cancellation"></param>
+    /// <returns></returns>
+    protected virtual async Task<TEntity> GetAsync<TEntity>(string cacheKey, Func<Task<TEntity>> fallback, CancellationToken cancellation = default)
     {
         TEntity? result = default;
 
@@ -91,9 +102,19 @@ public class RedisCacheService<TEntity, TKey> : IRedisCacheService<TEntity, TKey
 
             var value = await cache.GetAsync(cacheKey, cancellation);
 
-            result = value is null
-                ? default
-                : DeserializeContent(value);
+            if (value is null)
+            {
+                result = await fallback();
+
+                if (result != null)
+                {
+                    await SetAsync(result, cacheKey, cancellation);
+                }
+
+                return result;
+            }
+
+            result = DeserializeContent<TEntity>(value);
         }
         catch (Exception ex)
         {
@@ -111,9 +132,9 @@ public class RedisCacheService<TEntity, TKey> : IRedisCacheService<TEntity, TKey
 
     #region Private Methods
 
-    private static string SerializeContent(TEntity entity)
+    private static string SerializeContent<TEntity>(TEntity entity)
         => JsonConvert.SerializeObject(entity, Formatting.Indented, GetSerializerSettings());
-    private static TEntity DeserializeContent(byte[] cachedValue)
+    private static TEntity DeserializeContent<TEntity>(byte[] cachedValue)
         => JsonConvert.DeserializeObject<TEntity>(Encoding.UTF8.GetString(cachedValue), GetSerializerSettings());
 
     private static JsonSerializerSettings GetSerializerSettings()
