@@ -1,11 +1,11 @@
 ﻿using SiegeInitiative.Domain.Entities.Base;
 
-namespace SiegeInitiative.Application.Caching.Base;
+namespace SiegeInitiative.Core.Caching.Base;
 
 /// <summary>
 /// Redis communication interface 
 /// </summary>
-public interface IRedisCacheService<TEntity, TKey> where TEntity : AggregateRoot<TKey>
+public interface IRedisCacheService<TEntity, TKey> where TEntity : Entity<TKey>
 {
     /// <summary>
     /// Persist an object in redis

@@ -32,9 +32,8 @@ public abstract class ApiController : ControllerBase
         }
         catch (Exception ex)
         {
-            this.logger.LogError(methodName, new
+            this.logger.LogError(ex, methodName, new
             {
-                Exception = ex,
                 Request,
                 Method = methodName
             });

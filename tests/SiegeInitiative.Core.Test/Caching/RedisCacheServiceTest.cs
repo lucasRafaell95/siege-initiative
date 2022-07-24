@@ -3,8 +3,9 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
-using SiegeInitiative.Application.Caching.Base;
-using SiegeInitiative.Application.Options.Base;
+using SiegeInitiative.Core.Caching;
+using SiegeInitiative.Core.Caching.Base;
+using SiegeInitiative.Core.Options.Base;
 using SiegeInitiative.Domain.Entities;
 using SiegeInitiative.Domain.Entities.Base;
 using System;
@@ -13,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace SiegeInitiative.Application.Test.Caching;
+namespace SiegeInitiative.Core.Test.Caching;
 
 public sealed class RedisCacheServiceTest
 {
@@ -22,21 +23,21 @@ public sealed class RedisCacheServiceTest
     private readonly Mock<IRedisCacheOptions> options = new();
 
     [Fact]
-    [Trait(nameof(RedisCacheService<AggregateRoot<int>, int>), "new()")]
+    [Trait(nameof(RedisCacheService<Entity<int>, int>), "new()")]
     void Given_A_RedisCacheService_When_Any_Of_The_Parameters_Of_Constructor_Is_Null_An_ArgumentNullException_Should_Be_Thrown()
     {
         // act
-        Action actWithLoggerNull = () => new RedisCacheService<AggregateRoot<int>, int>(
+        Action actWithLoggerNull = () => new RedisCacheService<Entity<int>, int>(
             logger: null,
             cache: cache.Object,
             options: options.Object);
 
-        Action actWithCacheNull = () => new RedisCacheService<AggregateRoot<int>, int>(
+        Action actWithCacheNull = () => new RedisCacheService<Entity<int>, int>(
             logger: logger.Object,
             cache: null,
             options: options.Object);
 
-        Action actWithOptionsNull = () => new RedisCacheService<AggregateRoot<int>, int>(
+        Action actWithOptionsNull = () => new RedisCacheService<Entity<int>, int>(
             logger: logger.Object,
             cache: cache.Object,
             options: null);
@@ -53,7 +54,7 @@ public sealed class RedisCacheServiceTest
     }
 
     [Fact]
-    [Trait(nameof(RedisCacheService<AggregateRoot<int>, int>), nameof(IRedisCacheService<AggregateRoot<int>, int>.SetAsync))]
+    [Trait(nameof(RedisCacheService<Entity<int>, int>), nameof(IRedisCacheService<Entity<int>, int>.SetAsync))]
     async Task Given_A_New_Entity_When_The_Cache_Is_Disabled_The_Record_Should_Not_Be_Inserted_Into_The_Cache()
     {
         // arrange
@@ -74,7 +75,7 @@ public sealed class RedisCacheServiceTest
     }
 
     [Fact]
-    [Trait(nameof(RedisCacheService<AggregateRoot<int>, int>), nameof(IRedisCacheService<AggregateRoot<int>, int>.SetAsync))]
+    [Trait(nameof(RedisCacheService<Entity<int>, int>), nameof(IRedisCacheService<Entity<int>, int>.SetAsync))]
     async Task Given_An_Entity_When_It_Is_Null_No_Value_Should_Be_Inserted_In_The_Cache()
     {
         // arrange
@@ -95,7 +96,7 @@ public sealed class RedisCacheServiceTest
     }
 
     [Fact]
-    [Trait(nameof(RedisCacheService<AggregateRoot<int>, int>), nameof(IRedisCacheService<AggregateRoot<int>, int>.SetAsync))]
+    [Trait(nameof(RedisCacheService<Entity<int>, int>), nameof(IRedisCacheService<Entity<int>, int>.SetAsync))]
     async Task Given_An_Entity_When_An_Exception_Occurs_It_Should_Not_Be_Thrown_To_The_Service()
     {
         // arrange
@@ -129,7 +130,7 @@ public sealed class RedisCacheServiceTest
     }
 
     [Fact]
-    [Trait(nameof(RedisCacheService<AggregateRoot<int>, int>), nameof(IRedisCacheService<AggregateRoot<int>, int>.SetAsync))]
+    [Trait(nameof(RedisCacheService<Entity<int>, int>), nameof(IRedisCacheService<Entity<int>, int>.SetAsync))]
     async Task Given_An_Entity_When_Its_Value_Is_Not_Null_And_No_Exception_Occurs_A_New_Record_Must_Be_Inserted_In_The_Cache()
     {
         // arrange
@@ -165,7 +166,7 @@ public sealed class RedisCacheServiceTest
     }
 
     [Fact]
-    [Trait(nameof(RedisCacheService<AggregateRoot<int>, int>), nameof(IRedisCacheService<AggregateRoot<int>, int>.GetAsync))]
+    [Trait(nameof(RedisCacheService<Entity<int>, int>), nameof(IRedisCacheService<Entity<int>, int>.GetAsync))]
     async Task Given_A_Cache_Key_When_The_Enabled_Flag_Is_False_The_Cache_Should_Not_Be_Queried()
     {
         // arrange
@@ -183,7 +184,7 @@ public sealed class RedisCacheServiceTest
     }
 
     [Fact]
-    [Trait(nameof(RedisCacheService<AggregateRoot<int>, int>), nameof(IRedisCacheService<AggregateRoot<int>, int>.GetAsync))]
+    [Trait(nameof(RedisCacheService<Entity<int>, int>), nameof(IRedisCacheService<Entity<int>, int>.GetAsync))]
     async Task Given_A_Cache_Key_When_An_Exception_Occurs_It_Should_Not_Be_Thrown_To_The_Service()
     {
         // arrange
@@ -208,7 +209,7 @@ public sealed class RedisCacheServiceTest
     }
 
     [Fact]
-    [Trait(nameof(RedisCacheService<AggregateRoot<int>, int>), nameof(IRedisCacheService<AggregateRoot<int>, int>.GetAsync))]
+    [Trait(nameof(RedisCacheService<Entity<int>, int>), nameof(IRedisCacheService<Entity<int>, int>.GetAsync))]
     async Task Given_A_Cache_Key_When_There_Is_No_Record_With_The_Given_Key_Null_Should_Be_Returned()
     {
         // arrange
@@ -235,7 +236,7 @@ public sealed class RedisCacheServiceTest
     }
 
     [Fact]
-    [Trait(nameof(RedisCacheService<AggregateRoot<int>, int>), nameof(IRedisCacheService<AggregateRoot<int>, int>.GetAsync))]
+    [Trait(nameof(RedisCacheService<Entity<int>, int>), nameof(IRedisCacheService<Entity<int>, int>.GetAsync))]
     async Task Given_A_Cache_Key_When_The_Record_Exists_In_The_Cache_Should_Be_Returned()
     {
         // arrange
@@ -274,6 +275,6 @@ public sealed class RedisCacheServiceTest
                                     It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    private IRedisCacheService<AggregateRoot<int>, int> CreateRedisCacheService()
-        => new RedisCacheService<AggregateRoot<int>, int>(logger.Object, cache.Object, options.Object);
+    private IRedisCacheService<Entity<int>, int> CreateRedisCacheService()
+        => new RedisCacheService<Entity<int>, int>(logger.Object, cache.Object, options.Object);
 }

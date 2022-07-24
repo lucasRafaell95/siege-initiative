@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SiegeInitiative.Application.Caching.Base;
-using SiegeInitiative.Application.Options;
-using SiegeInitiative.Application.Options.Base;
+using SiegeInitiative.Core.Caching;
+using SiegeInitiative.Core.Caching.Base;
+using SiegeInitiative.Core.Options;
+using SiegeInitiative.Core.Options.Base;
 
-namespace SiegeInitiative.Application.Extensions;
+namespace SiegeInitiative.Core.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddApplicationDependecies(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCoreDependecies(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDistributedCache(configuration);
 

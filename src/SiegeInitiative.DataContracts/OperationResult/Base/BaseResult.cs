@@ -45,8 +45,8 @@ public class Result
     #region Private metods
 
     private bool ContainsError()
-        => messages.Any(_ => _.MessageType.Equals(MessageType.BusinessError) ||
-                             _.MessageType.Equals(MessageType.CriticalError));
+        => messages.Any(_ => _.MessageType.Equals(MessageType.BusinessError)
+                          || _.MessageType.Equals(MessageType.CriticalError));
 
     #endregion
 }

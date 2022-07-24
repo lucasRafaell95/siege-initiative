@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SiegeInitiative.Application.Options.Base;
+using SiegeInitiative.Core.Caching.Base;
+using SiegeInitiative.Core.Options.Base;
 using SiegeInitiative.Domain.Entities.Base;
 using System.Text;
 
-namespace SiegeInitiative.Application.Caching.Base;
+namespace SiegeInitiative.Core.Caching;
 
 public class RedisCacheService<TEntity, TKey> : IRedisCacheService<TEntity, TKey>
-    where TEntity : AggregateRoot<TKey>
+    where TEntity : Entity<TKey>
 {
     #region Fields
 

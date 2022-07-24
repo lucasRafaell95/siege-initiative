@@ -1,6 +1,6 @@
-﻿using SiegeInitiative.Application.Options.Base;
+﻿using SiegeInitiative.Core.Options.Base;
 
-namespace SiegeInitiative.Application.Options;
+namespace SiegeInitiative.Core.Options;
 
 public sealed record RedisCacheOptions : IRedisCacheOptions
 {

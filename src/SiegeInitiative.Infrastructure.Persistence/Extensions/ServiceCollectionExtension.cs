@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SiegeInitiative.Domain.Persistence.Repositories;
 using SiegeInitiative.Domain.Persistence.Repositories.Base;
 using SiegeInitiative.Infrastructure.Persistence.Core;
 using SiegeInitiative.Infrastructure.Persistence.Repositories;
@@ -18,6 +19,8 @@ public static class ServiceCollectionExtension
 
         services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
         services.AddScoped<IUnitOfWork>(_ => _.GetRequiredService<SiegeDbContext>());
+
+        services.AddScoped<ITeamRepository, TeamRepository>();
 
         return services;
     }

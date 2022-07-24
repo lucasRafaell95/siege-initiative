@@ -1,5 +1,6 @@
 using SiegeInitiative.Api.Extensions;
-using SiegeInitiative.CrossCutting.IoC;
+using SiegeInitiative.Core.Extensions;
+using SiegeInitiative.Infrastructure.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,9 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddApiDependencies(builder.Configuration);
 
-builder.Services.RegisterAplicationDependencies(builder.Configuration);
+builder.Services.AddCoreDependecies(builder.Configuration);
+
+builder.Services.AddPersistenceDependencies(builder.Configuration);
 
 var app = builder.Build();
 

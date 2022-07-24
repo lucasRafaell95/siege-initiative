@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace SiegeInitiative.Domain.Persistence.Repositories.Base;
 
-public interface IRepository<TEntity, TKey> where TEntity : AggregateRoot<TKey>
+public interface IRepository<TEntity, TKey> where TEntity : Entity<TKey>
 {
     IUnitOfWork UnitOfWork { get; }
 

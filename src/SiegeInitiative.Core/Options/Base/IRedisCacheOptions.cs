@@ -1,4 +1,4 @@
-﻿namespace SiegeInitiative.Application.Options.Base;
+﻿namespace SiegeInitiative.Core.Options.Base;
 
 /// <summary>
 /// Distributed cache options
